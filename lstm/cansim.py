@@ -66,10 +66,19 @@ import keras.backend as K
 from keras.callbacks import EarlyStopping
 
 K.clear_session()
-model = Sequential
+model = Sequential()
 model.add(LSTM(20, input_shape=(12, 1))) # (timestamp, feature) 12개의 시간간격, 특징은 가격만 활용
 model.add(Dense(1)) # output = 1
 model.compile(loss='mean_squared_error', optimizer='adam')
 
-print(model.summary()) #모델이 잘 생성되었는지 모델요약으로 확인
+#print(model.summary()) #모델이 잘 생성되었는지 모델요약으로 확인
 
+# 정상적인 모델로 생각되어 fitting 진행
+early_stop = EarlyStopping(monitor='loss', patience=1, verbose=1)
+model.fit(X_train_t, y_train, epochs=100,
+          batch_size=30, verbose=1, callbacks=[early_stop])
+print('***X_test_t***') #모델이 잘 맞는지
+print(X_test_t)
+print('****모델 예측값*****') #학습데이터로 설정한 모델에 X_test_t값을 넣었을때의 예측값
+y_pred = model.predict(X_test_t)
+print(y_pred)
